@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novel Translator - Alat Penerjemah Novel</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-book"></i> Novel Translator</h1>
+            <p>Terjemahkan novel atau teks panjang dengan mudah</p>
+        </header>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="ui-language">Bahasa Antarmuka:</label>
+                <select id="ui-language">
+                    <option value="ID">Indonesia</option>
+                    <option value="EN">English</option>
+                    <option value="JP">日本語</option>
+                    <option value="KR">한국어</option>
+                    <option value="CN">中文</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="api-provider">Layanan Terjemahan:</label>
+                <select id="api-provider">
+                    <option value="google">Google Translate</option>
+                    <option value="deepl">DeepL</option>
+                    <option value="openai">ChatGPT</option>
+                    <option value="claude">Claude</option>
+                    <option value="gemini">Gemini</option>
+                    <option value="microsoft">Microsoft Translator</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="source-language">Bahasa Sumber:</label>
+                <select id="source-language">
+                    <option value="auto">Deteksi Otomatis</option>
+                    <option value="id">Indonesia</option>
+                    <option value="en" selected>English</option>
+                    <option value="ja">日本語</option>
+                    <option value="ko">한국어</option>
+                    <option value="zh">中文</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="es">Español</option>
+                    <option value="ru">Русский</option>
+                    <option value="ar">العربية</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="target-language">Bahasa Target:</label>
+                <select id="target-language">
+                    <option value="id" selected>Indonesia</option>
+                    <option value="en">English</option>
+                    <option value="ja">日本語</option>
+                    <option value="ko">한국어</option>
+                    <option value="zh">中文</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="es">Español</option>
+                    <option value="ru">Русский</option>
+                    <option value="ar">العربية</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="api-key-container" id="api-key-container">
+            <label for="api-key">API Key (opsional untuk beberapa layanan):</label>
+            <input type="password" id="api-key" placeholder="Masukkan API key jika diperlukan">
+            <button id="toggle-api-key"><i class="fas fa-eye"></i></button>
+        </div>
+
+        <div class="text-areas">
+            <div class="text-area-container">
+                <label for="source-text">Teks Sumber</label>
+                <textarea id="source-text" placeholder="Masukkan teks yang ingin diterjemahkan..."></textarea>
+                <div class="char-count" id="source-char-count">0 karakter</div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="translate-btn" class="btn-primary">
+                    <i class="fas fa-exchange-alt"></i> Terjemahkan
+                </button>
+                <button id="swap-languages" class="btn-secondary" title="Tukar Bahasa">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+
+            <div class="text-area-container">
+                <label for="target-text">Hasil Terjemahan</label>
+                <textarea id="target-text" readonly placeholder="Hasil terjemahan akan muncul di sini..."></textarea>
+                <div class="char-count" id="target-char-count">0 karakter</div>
+            </div>
+        </div>
+
+        <div class="utility-buttons">
+            <button id="import-btn" class="btn-secondary">
+                <i class="fas fa-file-import"></i> Impor Teks
+            </button>
+            <button id="export-btn" class="btn-secondary">
+                <i class="fas fa-file-export"></i> Ekspor Hasil
+            </button>
+            <button id="clear-btn" class="btn-secondary">
+                <i class="fas fa-broom"></i> Bersihkan
+            </button>
+            <button id="settings-btn" class="btn-secondary">
+                <i class="fas fa-cog"></i> Pengaturan
+            </button>
+        </div>
+
+        <div class="progress-container" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+            <div class="progress-text" id="progress-text">Menerjemahkan...</div>
+        </div>
+
+        <div class="status-bar" id="status-bar">Siap</div>
+
+        <input type="file" id="file-input" accept=".txt" style="display: none;">
+    </div>
+
+    <div class="sample-texts">
+        <h3>Teks Contoh:</h3>
+        <div class="sample-buttons">
+            <button data-lang="JP" class="sample-btn">日本語</button>
+            <button data-lang="KR" class="sample-btn">한국어</button>
+            <button data-lang="CN" class="sample-btn">中文</button>
+            <button data-lang="EN" class="sample-btn">English</button>
+            <button data-lang="ID" class="sample-btn">Indonesia</button>
+        </div>
+    </div>
+
+    <!-- Modal untuk pengaturan -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Pengaturan API</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Beberapa layanan memerlukan API key. Dapatkan API key dari penyedia layanan:</p>
+                <ul>
+                    <li><strong>Google Translate:</strong> Tidak memerlukan API key untuk penggunaan dasar</li>
+                    <li><strong>DeepL:</strong> <a href="https://www.deepl.com/pro-api" target="_blank">Dapatkan API key</a></li>
+                    <li><strong>ChatGPT:</strong> <a href="https://platform.openai.com/api-keys" target="_blank">Dapatkan API key</a></li>
+                    <li><strong>Claude:</strong> <a href="https://console.anthropic.com/settings/keys" target="_blank">Dapatkan API key</a></li>
+                    <li><strong>Gemini:</strong> <a href="https://aistudio.google.com/app/apikey" target="_blank">Dapatkan API key</a></li>
+                    <li><strong>Microsoft Translator:</strong> <a href="https://azure.microsoft.com/products/cognitive-services/translator" target="_blank">Dapatkan API key</a></li>
+                </ul>
+                <div class="api-key-storage">
+                    <label for="save-api-key">Simpan API Key (disimpan di browser lokal):</label>
+                    <input type="checkbox" id="save-api-key" checked>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
